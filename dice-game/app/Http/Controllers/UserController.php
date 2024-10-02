@@ -31,4 +31,27 @@ class UserController extends Controller
             'message'=>'Acabas de registrarte!!!',
         ]);
     }
+    public function login(Request $request){
+        $request->validate(
+            [
+                'email' => ['required'],
+                'password' => ['required']
+            ]
+        );
+        $user=User::where('email', $request->email)->first();
+
+        if(!$user || !Hash::check($request->password, $user->password)){
+            return response([
+                'message'=>'Los datos introducidos no son correctos'
+            ]);
+        }
+        
+        $token=$user->createToken('auth_token')->accessToken;
+
+        return response([
+            'token'=> $token,
+            'message'=>'Estás en sesión'
+        ]);
+    }
+
 }

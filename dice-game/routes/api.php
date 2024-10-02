@@ -8,3 +8,4 @@ use Illuminate\Support\Facades\Route;
     return $request->user();
 })->middleware('auth:sanctum');*/
 Route::post('/players', [UserController::class, 'register']);
+Route::post('/login', [UserController::class, 'login']);

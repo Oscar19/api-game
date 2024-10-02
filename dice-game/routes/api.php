@@ -9,3 +9,8 @@ use Illuminate\Support\Facades\Route;
 })->middleware('auth:sanctum');*/
 Route::post('/players', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
+
+Route::group(['middleware' => 'auth:api', 'role:admin'], function (){
+    //mostramos todos los jugadores
+    Route::get('/players',[UserController::class, 'DisplayAllPlayers']);
+});

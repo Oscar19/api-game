@@ -53,5 +53,18 @@ class UserController extends Controller
             'message'=>'Estás en sesión'
         ]);
     }
+    public function DisplayAllPlayers(Request $request)
+    {
+        /*$roles = $request->user()->getRoleNames();
+        return response()->json($roles);*/
+        if ($request->user()->hasRole('admin')) {
+            $users = User::all();
+            return response()->json($users);
+        } else {
+            return response()->json([
+                'message' => 'No tienes permiso para acceder a esta información.'
+            ], 403);
+        }
+    }
 
 }

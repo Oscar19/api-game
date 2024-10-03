@@ -19,7 +19,7 @@ class UserController extends Controller
         );
         $user = User::create(
             [
-                'name' => $request->nickname,
+                'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]
@@ -65,6 +65,18 @@ class UserController extends Controller
                 'message' => 'No tienes permiso para acceder a esta información.'
             ], 403);
         }
+    }
+    public function updateUser(Request $request, string $id){
+        $user = User::find($id);
+
+        if ($request->has('name')) {
+            $request->validate(['name' => ['nullable', 'string', 'max:100']]);
+            $user->name = $request->name;
+            $user->save();
+        }
+
+        return response()->json(['message' => 'Nickname modificado.'], 200);
+
     }
 
 }

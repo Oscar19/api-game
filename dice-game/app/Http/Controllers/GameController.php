@@ -23,4 +23,11 @@ class GameController extends Controller
 
         return response()->json($game);
     }
+    public function deleteGame($id)
+    {
+            $player = User::find($id);
+            $player->games()->delete();
+
+            return response()->json(['message' => 'Tiradas eliminadas']);
+    }
 }

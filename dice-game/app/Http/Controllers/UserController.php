@@ -53,6 +53,17 @@ class UserController extends Controller
             'message'=>'Estás en sesión'
         ]);
     }
+    public function logout(Request $request){
+        $user = $request->user();
+
+        if ($user) {
+            $user->tokens()->delete();
+        }
+
+        return response()->json([
+            'message' => 'Has salido del juego'
+        ], 200);
+    }
     public function DisplayAllPlayers(Request $request)
     {
         /*$roles = $request->user()->getRoleNames();

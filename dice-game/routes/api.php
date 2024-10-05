@@ -19,4 +19,5 @@ Route::group(['middleware' => 'auth:api'], function (){
     Route::post('/players/{id}/games', [GameController::class, 'createGame']); 
     Route::delete('/players/{id}/games', [GameController::class, 'deleteGames']);
     Route::put('/players/{id} ', [UserController::class, 'updateUser']); 
+    Route::post('/logout', [GameController::class, 'logout']); 
 });

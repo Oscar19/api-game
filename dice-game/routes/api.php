@@ -15,6 +15,7 @@ Route::group(['middleware' => 'auth:api', 'role:admin'], function (){
     //mostramos todos los jugadores
     Route::get('/players',[UserController::class, 'DisplayAllPlayers']);
     Route::get('/players/ranking',[UserController::class, 'userRanking']);
+    Route::get('/players/ranking/loser',[UserController::class, 'getLoser']);
     
 });
 Route::group(['middleware' => 'auth:api'], function (){

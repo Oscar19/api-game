@@ -98,7 +98,7 @@ class UserController extends Controller
         return response()->json(['message' => 'Nickname modificado.'], 200);
 
     }
-    public function userRanking(Request $request){
+    public function userRanking(Request $request, $returnData = false){
         if ($request->user()->hasRole('admin')) {
             $users = User::with('games')->get();
 
@@ -109,6 +109,9 @@ class UserController extends Controller
             $user->success_rate = $successRate; 
             return $user;
         });
+        if ($returnData) {
+            return $users;
+        }
         $users = $users->sortByDesc('success_rate')->values();
 
   
@@ -121,6 +124,22 @@ class UserController extends Controller
             
         }
         
+    }
+    public function getLoser(Request $request){
+        if ($request->user()->hasRole('admin')) {
+            $users = $this->userRanking($request, true); 
+        $loser = $users->sortBy('success_rate')->first();
+
+        return response()->json([
+            'loser' => $loser->name,
+            'success_rate' => $loser->success_rate,
+            'message' => 'Este es el jugador con el peor porcentaje de éxito'
+        ], 200);
+        }else{
+            return response()->json([
+                'message' => 'No tienes permiso para acceder a esta información.'
+            ], 403);
+        }
     }
   
 

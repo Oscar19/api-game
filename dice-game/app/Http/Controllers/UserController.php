@@ -53,6 +53,15 @@ class UserController extends Controller
             'message'=>'Estás en sesión'
         ]);
     }
+    public function getUser($id){
+        $user = User::with('games')->find($id);
+        if ($user->games->isEmpty()) {
+            return response()->json(['message' => 'Este usuario no ha hecho ninguna jugada.'], 200);
+        }else{
+            return response()->json($user->games);
+        }
+
+    }
     public function logout(Request $request){
         $user = $request->user();
 

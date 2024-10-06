@@ -141,6 +141,22 @@ class UserController extends Controller
             ], 403);
         }
     }
+    public function getWin(Request $request){
+        if ($request->user()->hasRole('admin')) {
+            $users = $this->userRanking($request, true); 
+        $winner = $users->sortByDesc('success_rate')->first();
+
+        return response()->json([
+            'winner' => $winner->name,
+            'success_rate' => $winner->success_rate,
+            'message' => 'Este es el jugador con el mejor porcentaje de éxito'
+        ], 200);
+        }else{
+            return response()->json([
+                'message' => 'No tienes permiso para acceder a esta información.'
+            ], 403);
+        }
+    }
   
 
 }

@@ -26,10 +26,10 @@ class UserController extends Controller
         );
         $token=$user->createToken('auth_token')->accessToken;
 
-        return response([
-            'token'=> $token,
-            'message'=>'Acabas de registrarte!!!',
-        ]);
+        return response()->json([
+            'token' => $token,
+            'message' => 'Acabas de registrarte!!!',
+        ], 201);
     }
     public function login(Request $request){
         $request->validate(
@@ -109,7 +109,7 @@ class UserController extends Controller
             $user->success_rate = $successRate; 
             return $user;
         });
-        if ($returnData) {
+        if ($returnData) {//para reutilizar
             return $users;
         }
         $users = $users->sortByDesc('success_rate')->values();

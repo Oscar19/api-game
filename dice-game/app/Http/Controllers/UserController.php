@@ -89,5 +89,30 @@ class UserController extends Controller
         return response()->json(['message' => 'Nickname modificado.'], 200);
 
     }
+    public function userRanking(Request $request){
+        if ($request->user()->hasRole('admin')) {
+            $users = User::with('games')->get();
+
+            $users = $users->map(function ($user) {
+            $totalGames = $user->games->count();
+            $winGames = $user->games->where('winner', true)->count();
+            $successRate = $totalGames > 0 ? ($winGames / $totalGames) * 100 : 0;
+            $user->success_rate = $successRate; 
+            return $user;
+        });
+        $users = $users->sortByDesc('success_rate')->values();
+
+  
+        return response()->json($users);
+        }else{
+           
+                return response()->json([
+                    'message' => 'No tienes permiso para acceder a esta información.'
+                ], 403);
+            
+        }
+        
+    }
+  
 
 }

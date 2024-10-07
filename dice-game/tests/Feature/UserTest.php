@@ -99,4 +99,23 @@ class UserTest extends TestCase
                      'success' => false,
         ]);
     }
+    public function test_updateUser()
+    {
+        $user = User::factory()->create();
+        $token = $user->createToken('TestToken')->accessToken;//con esto tenemos al usuario logueado
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+        ])->putJson("/api/players/{$user->id}", [
+            'name' => 'Sergio',
+        ]);
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'message',
+        ]);
+        $this->assertEquals('Sergio',
+        $user->fresh()->name);//comprobamos que ha cambiado
+    }
+
+
 }

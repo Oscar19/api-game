@@ -62,4 +62,41 @@ class UserTest extends TestCase
         $this->assertEquals($user->name, 'TestUsuario');
         $this->assertEquals($user->email, 'test@prueba.com');
     }
+
+    #[\PHPUnit\Framework\Attributes\Test] 
+    public function test_user_login(){
+        $user = User::factory()->create([
+            'email' => 'test@prueba.com',
+            'password' => bcrypt($password = '12345'),
+        ]);
+
+        $response = $this->postJson('/api/login', [
+            'email' => $user->email,
+            'password' => $password,
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'message',
+            'token',
+        ]);
+    }
+  
+    public function test_user_login_error(){
+        $user = User::factory()->create([
+            'email' => 'test@prueba.com',
+            'password' => bcrypt($password = '12345'),
+        ]);
+
+        $response = $this->postJson('/api/login', [
+            'email' => $user->email,
+            'password' => 'abcde',
+        ]);
+
+        $response->assertStatus(401)
+        ->assertJson([
+                     'error' => 'Los datos introducidos no son correctos',
+                     'success' => false,
+        ]);
+    }
 }

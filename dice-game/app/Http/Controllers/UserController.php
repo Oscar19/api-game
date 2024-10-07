@@ -42,8 +42,9 @@ class UserController extends Controller
 
         if(!$user || !Hash::check($request->password, $user->password)){
             return response([
-                'message'=>'Los datos introducidos no son correctos'
-            ]);
+                'error'=>'Los datos introducidos no son correctos',
+                'success' => false,
+            ],401);
         }
         
         $token=$user->createToken('auth_token')->accessToken;

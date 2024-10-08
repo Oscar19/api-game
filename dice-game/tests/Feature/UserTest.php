@@ -39,18 +39,19 @@ class UserTest extends TestCase
             'name' => 'Another User',
             'email' => 'anotheruser@example.com',
             'password' => bcrypt('anotheruserpassword'),
+            'rol' => 'jugador',
         ]);
     }
 
     #[\PHPUnit\Framework\Attributes\Test] 
-    public function test_user_can_be_registered()
+    public function test_userRegister()
     {
         $this->withoutExceptionHandling();
 
         $response = $this->post('/api/players', [
             'name' => 'TestUsuario',
             'email' => 'test@prueba.com',
-            'password' => '12345'
+            'password' => '12345',
         ]);
 
         $response->assertStatus(201);
@@ -116,6 +117,19 @@ class UserTest extends TestCase
         $this->assertEquals('Sergio',
         $user->fresh()->name);//comprobamos que ha cambiado
     }
-
-
+    public function test_updateOtherUser(){
+        $user = User::factory()->create();
+        $token = $user->createToken('TestToken')->accessToken;
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+        ])->putJson("/api/players/{$this->anotherUser->id}", [
+            'name' => 'Xavi',
+        ]);
+        $response->assertStatus(403)
+        ->assertJson([
+            'message' => 'No puedes cambiar el nickname de otro usuario.',
+        ]);
+        $this->assertNotEquals('Xavi', $this->anotherUser->fresh()->name);
+    }
+    
 }

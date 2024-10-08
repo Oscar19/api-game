@@ -89,8 +89,11 @@ class UserController extends Controller
     }
     public function updateUser(Request $request, string $id){
         $user = User::find($id);
+        if ($request->user()->id !== $user->id) {
 
-        if ($request->has('name')) {
+            abort(403, 'No puedes cambiar el nickname de otro usuario.');
+        }else
+         {
             $request->validate(['name' => ['nullable', 'string', 'max:100']]);
             $user->name = $request->name;
             $user->save();

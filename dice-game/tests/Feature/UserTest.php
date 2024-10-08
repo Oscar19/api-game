@@ -130,6 +130,19 @@ class UserTest extends TestCase
             'message' => 'No puedes cambiar el nickname de otro usuario.',
         ]);
         $this->assertNotEquals('Xavi', $this->anotherUser->fresh()->name);
+    } 
+    public function test_updatenull(){
+        $user = User::factory()->create();
+        $token = $user->createToken('TestToken')->accessToken;
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+        ])->putJson("/api/players/{$this->anotherUser->id}", [
+            'name' => '',
+        ]);
+        $response->assertStatus(403)
+        ->assertJson([
+            'message' => 'No puedes cambiar el nickname de otro usuario.',
+        ]);
+        $this->assertNotEquals('', $this->anotherUser->fresh()->name);
     }
-    
 }

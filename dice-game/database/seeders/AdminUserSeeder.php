@@ -18,17 +18,17 @@ class AdminUserSeeder extends Seeder
             'name' => 'Admin',
             'email' => 'admin@test.com',
             'password' => bcrypt('password'), 
-            'rol' => 'admin', // Asegurarse de que el rol esté correctamente asignado
+            'rol' => 'admin',
         ]);
 
-        // Asegurarse de que el rol de admin ya exista
+        
         $role = Role::where('name', 'admin')->first();
 
         if ($role) {
-            // Asignar el rol de admin (si utilizas Spatie)
+           
             $admin->assignRole('admin');
         } else {
-            // Si el rol no existe, se crea y se asigna
+          
             $admin->assignRole(Role::create(['name' => 'admin']));
         }
     }

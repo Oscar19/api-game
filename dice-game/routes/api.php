@@ -20,7 +20,7 @@ Route::group(['middleware' => 'auth:api', 'role:admin'], function (){
 });
 Route::group(['middleware' => 'auth:api'], function (){
     Route::post('/players/{id}/games', [GameController::class, 'createGame']);
-    Route::get('/players/{id}/games', [GameController::class, 'getUser']);  
+    Route::get('/players/{id}/games', [GameController::class, 'displayGame']);  
     Route::delete('/players/{id}/games', [GameController::class, 'deleteGame']);
     Route::put('/players/{id} ', [UserController::class, 'updateUser']); 
     Route::post('/logout', [GameController::class, 'logout']); 

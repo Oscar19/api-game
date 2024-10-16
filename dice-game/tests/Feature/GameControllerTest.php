@@ -2,7 +2,9 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Database\seeders\RoleSeeder;
 use Tests\TestCase;
+use Laravel\Passport\ClientRepository as PassportClientRepository;
 use App\Models\User;
 use App\Models\Game;
 
@@ -11,6 +13,8 @@ class GameControllerTest extends TestCase
     use RefreshDatabase;
 
     protected $user;
+    protected $admin;
+    protected $adminToken;
     protected $otherUser;
     protected $game;
 
@@ -31,6 +35,7 @@ class GameControllerTest extends TestCase
         ]);
     }
     #[\PHPUnit\Framework\Attributes\Test]
+  
     public function test_userGame()
     {
         $response = $this->actingAs($this->user, 'api')->postJson('/api/players/' . $this->user->id . '/games');
@@ -73,6 +78,42 @@ class GameControllerTest extends TestCase
                 'message' => 'No estás autorizado para borrar juegos para este usuario',
             ]);
     }
+    public function test_displayGames()
+    {
+    
+        $user = $this->user;
+        $game1 = $user->games()->create([
+            'dice1' => 3,
+            'dice2' => 4,
+            'winner' => true,
+        ]);
+
+        $game2 = $user->games()->create([
+            'dice1' => 2,
+            'dice2' => 5,
+            'winner' => false,
+        ]);
+
+        $response = $this->actingAs($user, 'api')->getJson('/api/players/' . $user->id . '/games');
+
+        $response->assertStatus(200)
+            ->assertJsonFragment([
+                'player' => $user->name,
+            ])
+            ->assertJsonFragment([
+                'dice1' => 3,
+                'dice2' => 4,
+                'winner' => 1,
+            ])
+            ->assertJsonFragment([
+                'dice1' => 2,
+                'dice2' => 5,
+                'winner' => 0,
+            ]);
+    }
+
+    
+
 
 }
 

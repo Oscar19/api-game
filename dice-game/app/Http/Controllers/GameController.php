@@ -8,6 +8,24 @@ use Illuminate\Support\Facades\Auth;
 
 class GameController extends Controller
 {
+    public function displayGame($id){
+        $player = User::find($id);
+        if (Auth::user()->id != $id) {
+            return response()->json(['message' => 'No estás autorizado para ver gugadas de otros usuarios'], 403);
+        }  
+        $games = $player->games;
+
+        if ($games->isEmpty()) {
+            return response()->json(['message' => 'No hay jugadas disponibles para este jugador'], 404);
+        }
+
+        return response()->json([
+            'player' => $player->name,
+            'games' => $games
+        ], 200);
+
+
+    }
     
     public function createGame($id)
     {

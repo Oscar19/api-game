@@ -13,13 +13,22 @@ class UserController extends Controller
         $request->validate(
             [
                 'name' => ['nullable', 'string', 'max:100'],
-                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-                'password' => ['required', 'string' ]
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+                'password' => ['required', 'string' ],
+                ['email.unique' => 'Este email ya está registrado',]
             ]
         );
+
+        $name = $request->name ?? 'Anonim';
+
+    if (!empty($request->name) && $name !== 'Anonim') {
+        $request->validate([
+            'name' => ['unique:users,name'],
+        ]);
+    }
         $user = User::create(
             [
-                'name' => $request->name,
+                'name' => $name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]

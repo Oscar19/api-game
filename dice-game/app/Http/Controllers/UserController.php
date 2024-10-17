@@ -103,16 +103,18 @@ class UserController extends Controller
             abort(403, 'No puedes cambiar el nickname de otro usuario.');
         }else
          {
-            if(empty($request->name)){
-                $name = $user->name;
-                return response()->json([
-                    'message' => $name.' , no puedes dejar vacío este campo'
-                ], 400);
+            $name = $request->name ?? 'Anonim';
+
+            if (empty($name)) {
+                $request->validate([
+                    'name' => ['unique:users,name'],
+                ]);
             }else{
                 $request->validate(['name' => ['nullable', 'string', 'max:100']]);
-                $user->name = $request->name;
-                $user->save();
+                
             }
+            $user->name = $name;
+            $user->save();
             
         }
 
